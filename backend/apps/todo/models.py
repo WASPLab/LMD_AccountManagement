@@ -3,39 +3,73 @@ import uuid
 from pydantic import BaseModel, Field, validator
 from bson.objectid import ObjectId
 
-# class PyObjectId(ObjectId):
-#     """ Custom Type for reading MongoDB IDs """
-#     @classmethod
-#     def __get_validators__(cls):
-#         yield cls.validate
+class Address(BaseModel):
+    street: str = Field(...)
+    addressline2: str= Field(...)
+    city:str = Field(...)
+    province: str = Field(...)
+    postalcode: str = Field(...)
 
-#     @classmethod
-#     def validate(cls, v):
-#         if not ObjectId.is_valid(v):
-#             raise ValueError("Invalid object_id")
-#         return ObjectId(v)
+class Payment(BaseModel):
+    card_number: str = Field(...)
+    Expiration: str = Field(...)
+    name_on_card: str = Field(...)
+    cvc: str = Field(...)
 
-#     @classmethod
-#     def __modify_schema__(cls, field_schema):
-#         field_schema.update(type="string")
+class Vehicle(BaseModel):
+    vehicle_insurance_number: str = Field(...)
+    car_make: str = Field(...)
+    car_model: str = Field(...)
+    year:str = Field(...)
 
-# class ObjId(ObjectId):
-#     @classmethod
-#     def __get_validators__(cls):
-#         yield cls.validate
+class License(BaseModel):
+    license_number: str = Field(...)
+    license_expiry_date: str = Field(...)
 
-class TaskModel(BaseModel):
+class Driver(BaseModel):
 
-    # id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    id: str = Field(...)
-    name: str = Field(...)
-    completed: bool = Field(...)
-    taskid: str = Field(...)
+    first_name: str = Field(...)
+    last_name: str = Field(...)
+    username: str = Field(...)
+    email: str = Field(...)
+    password: str = Field(...)
+    # address: Address
+    # phone: str = Field(...)
+    # payment: Payment
+    # driving_license: License
+    # vehicle_details: Vehicle
+    # insurance_policy_number: str = Field(...)
+    # reputation_score: str = Field(...)
 
-class UpdateTaskModel(BaseModel):
+class Shipper(BaseModel):
 
-    name: str = Field(...)
-    completed: bool = Field(...)
+    username: str = Field(...)
+    email: str = Field(...)
+    address: Address
+    password: str = Field(...)
+    phone: str = Field(...)
+    payment: Payment
+    business_type: str = Field(...)
+    reputation_score : str = Field(...)
+
+class UpdateDriver(BaseModel):
+
+    username: str = Field(...)
+    email: str = Field(...) 
+    phone: str = Field(...)
+    address: Address
+    payment: Payment
+
+
+class UpdateShipper(BaseModel):
+
+    username: str = Field(...)
+    email: str = Field(...)
+    address: str = Address
+    # password: str = Field(...)
+    phone: str = Field(...)
+    payment: Payment
+    business_type: str = Field(...)
 
 class Customers(BaseModel):
 
@@ -46,13 +80,15 @@ class Customers(BaseModel):
     phone_number: str = Field(...)
     reputation_score: str = Field(...)
 
-class Shipper(BaseModel):
+class LoginModel(BaseModel):
 
-    shipper: str = Field(...)
-    address: str = Field(...)
-    name: str = Field(...)
-    email: str = Field(...)
+    username: str = Field(...)
     password: str = Field(...)
-    phone_number: str = Field(...)
-    business_type: str = Field(...)
-    reputation_score : str = Field(...)
+
+
+class Token(BaseModel):
+    access_token:str
+    token_type:str
+
+class TokenData(BaseModel):
+    username: Optional[str]=None

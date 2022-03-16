@@ -1,0 +1,61 @@
+{
+    "username": "driver1",
+    "email": "dri1@gmail.com",
+    "address": {
+        "street": "401 Sunset Avenue",
+        "addressline2": "string",
+        "city": "Windsor",
+        "province": "Ontario",
+        "postalcode": "N9B3P4"
+    },
+    "password": "secret",
+    "phone": "5192533000",
+    "payment": {
+        "card_number": "1234567891234567",
+        "Expiration": "01/99",
+        "name_on_card": "Driver Drives",
+        "cvc": "999"
+    },
+    "driving_license": {
+        "license_number": "1234567891",
+        "license_expiry_date": "01/99"
+    },
+    "vehicle_details": {
+        "vehicle_insurance_number": "1234567891",
+        "car_make": "Toyota",
+        "car_model": "Corola",
+        "year": "2015"
+    },
+    "insurance_policy_number": "1234567891",
+    "reputation_score": "10"
+}
+
+
+
+
+
+
+
+
+{
+    "username": "shipper1",
+    "email": "shipper1@gmail.com",
+    "address": {
+        "street": "401 Sunset Avenue",
+        "addressline2": "string",
+        "city": "Windsor",
+        "province": "Ontario",
+        "postalcode": "N9B 3P4"
+    },
+    "password": "secret",
+    "phone": "1234567891",
+    "payment": {
+        "card_number": "123456789123",
+        "Expiration": "01/99",
+        "name_on_card": "Shipper ships",
+        "cvc": "999"
+    },
+    "business_type": "Service",
+    "reputation_score" : "10"
+
+}
