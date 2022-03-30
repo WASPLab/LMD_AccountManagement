@@ -4,91 +4,99 @@ from pydantic import BaseModel, Field, validator
 from bson.objectid import ObjectId
 
 class Address(BaseModel):
-    street: str = Field(...)
-    addressline2: str= Field(...)
-    city:str = Field(...)
-    province: str = Field(...)
-    postalcode: str = Field(...)
+    street: Optional[str] = Field(...)
+    addressline2: Optional[str]= Field(...)
+    city:Optional[str] = Field(...)
+    province: Optional[str] = Field(...)
+    postalcode: Optional[str] = Field(...)
 
 class Payment(BaseModel):
-    card_number: str = Field(...)
-    Expiration: str = Field(...)
-    name_on_card: str = Field(...)
-    cvc: str = Field(...)
+    card_number: Optional[str] = Field(...)
+    expiration: Optional[str] = Field(...)
+    name_on_card: Optional[str] = Field(...)
+    cvc: Optional[str] = Field(...)
 
 class Vehicle(BaseModel):
-    vehicle_insurance_number: str = Field(...)
-    car_make: str = Field(...)
-    car_model: str = Field(...)
-    year:str = Field(...)
+    vehicle_insurance_number: Optional[str] = Field(...)
+    car_make: Optional[str] = Field(...)
+    car_model: Optional[str] = Field(...)
+    year:Optional[str] = Field(...)
 
 class License(BaseModel):
-    license_number: str = Field(...)
-    license_expiry_date: str = Field(...)
+    license_number: Optional[str] = Field(...)
+    license_expiry_date: Optional[str] = Field(...)
 
-class Driver(BaseModel):
+# class Driver(BaseModel):
 
-    first_name: str = Field(...)
-    last_name: str = Field(...)
-    username: str = Field(...)
-    email: str = Field(...)
-    password: str = Field(...)
-    # address: Address
-    # phone: str = Field(...)
-    # payment: Payment
-    # driving_license: License
-    # vehicle_details: Vehicle
-    # insurance_policy_number: str = Field(...)
-    # reputation_score: str = Field(...)
+#     insurance_policy_number: Optional[str] = Field(...)
+#     photo_id: Optional[str] = Field(...)
+#     work_eligibility: Optional[str] = Field(...)
+#     reputation_score: Optional[str] = Field(...)
+
+class Signup(BaseModel):
+    first_name: Optional[str] = Field(...)
+    last_name: Optional[str] = Field(...)
+    username: Optional[str] = Field(...)
+    # phone: Optional[str] = Field(...)
+    email: Optional[str] = Field(...)
+    password: Optional[str] = Field(...)
 
 class Shipper(BaseModel):
-
-    username: str = Field(...)
-    email: str = Field(...)
-    address: Address
-    password: str = Field(...)
-    phone: str = Field(...)
-    payment: Payment
-    business_type: str = Field(...)
-    reputation_score : str = Field(...)
-
-class UpdateDriver(BaseModel):
-
-    username: str = Field(...)
-    email: str = Field(...) 
-    phone: str = Field(...)
-    address: Address
-    payment: Payment
-
+    business_name: Optional[str] = Field(...)
+    business_type: Optional[str] = Field(...)
+    # reputation_score : Optional[str] = Field(...)
 
 class UpdateShipper(BaseModel):
 
-    username: str = Field(...)
-    email: str = Field(...)
-    address: str = Address
-    # password: str = Field(...)
-    phone: str = Field(...)
+    username: Optional[str] = Field(...)
+    email: Optional[str] = Field(...)
+    address: Optional[str] = Address
+    password: Optional[str] = Field(...)
+    phone: Optional[str] = Field(...)
     payment: Payment
-    business_type: str = Field(...)
+    business_type: Optional[str] = Field(...)
 
-class Customers(BaseModel):
+class UpdateDriver(BaseModel):
 
-    name: str = Field(...)
-    address: str = Field(...)
-    email: str = Field(...)
-    password: str = Field(...)
-    phone_number: str = Field(...)
-    reputation_score: str = Field(...)
+    username: Optional[str] = Field(...)
+    email: Optional[str] = Field(...) 
+    phone: Optional[str] = Field(...)
+    address: Address
+    payment: Payment
+
+class Consignee(BaseModel):
+
+    name: Optional[str] = Field(...)
+    address: Optional[str] = Field(...)
+    email: Optional[str] = Field(...)
+    password: Optional[str] = Field(...)
+    phone_number: Optional[str] = Field(...)
+    reputation_score: Optional[str] = Field(...)
+
+class Parcel(BaseModel):
+    # shipper_username: Optional[str] = Field(...)
+    # driver_username: Optional[str] = Field(...)
+    # consignee_username: Optional[str] = Field(...)
+    # parcelid:Optional[str] = Field(...)
+    status: Optional[str] = Field(...)
+    size: Optional[str] = Field(...)
+    numItems: Optional[str] = Field(...)
+    cost: Optional[str] = Field(...)
+    pickupLocation: Optional[str] = Field(...)
+    dropLocation: Optional[str] = Field(...)
+    deliveryDay: Optional[str] = Field(...)
+    pickupTime: Optional[str] = Field(...)
+    deliveryTime: Optional[str] = Field(...)
 
 class LoginModel(BaseModel):
 
-    username: str = Field(...)
-    password: str = Field(...)
+    username: Optional[str] = Field(...)
+    password: Optional[str] = Field(...)
 
 
 class Token(BaseModel):
-    access_token:str
-    token_type:str
+    access_token:Optional[str]
+    token_type:Optional[str]
 
 class TokenData(BaseModel):
     username: Optional[str]=None
