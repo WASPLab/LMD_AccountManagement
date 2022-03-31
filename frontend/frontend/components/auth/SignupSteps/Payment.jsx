@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Button, Form, Segment } from 'semantic-ui-react';
-import Router from 'next/router';
 
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 const backend_url = "http://localhost:8000"
 
-const Payment = ({ setActiveItem }) => {
+const Payment = () => {
+  const router = useRouter()
   const token = Cookies.get("token")
   const type = Cookies.get("type")
 
@@ -42,7 +43,7 @@ const Payment = ({ setActiveItem }) => {
       const data = await axios.post(`${backend_url}/task/editpayment?type=${type}`, addressDetail, {
         headers: { 'Authorization': `Bearer ${token}`}
       })
-      Router.push("/consigneeHomePage")
+      router.reload("/consigneeHomePage")
     } catch (error) {
       console.log(error)
       setErrormsg(error)

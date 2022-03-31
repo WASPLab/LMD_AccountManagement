@@ -32,15 +32,44 @@ MyApp.getInitialProps = async ({ ctx }) => {
   let pageProps = {};
 
   const protectedRoutes =
-  ctx.pathname === "/driverHomePage" ||
-  ctx.pathname === "/shipperHomePage" ||
-  ctx.pathname === "/consigneeHomePage" ||
-  ctx.pathname === "/profile"
+    ctx.pathname === "/driverHomePage" ||
+    ctx.pathname === "/shipperHomePage" ||
+    ctx.pathname === "/consigneeHomePage" ||
+    ctx.pathname === "/driversParcels" ||
+    ctx.pathname === "/shippersParcels" ||
+    ctx.pathname === "/consigneesParcels" ||
+    ctx.pathname === "/profile"
+
+  if (token) {
+    if(type === "drivers") {
+      const driverProtectedRoutes = 
+        ctx.pathname === "/shipperHomePage" ||
+        ctx.pathname === "/consigneeHomePage" ||
+        ctx.pathname === "/shippersParcels" ||
+        ctx.pathname === "/consigneesParcels"  
+      driverProtectedRoutes && redirectUser("/driverHomePage")
+    } else if(type === "shippers") {
+      const driverProtectedRoutes = 
+        ctx.pathname === "/driverHomePage" ||
+        ctx.pathname === "/consigneeHomePage" ||
+        ctx.pathname === "/driversParcels" ||
+        ctx.pathname === "/consigneesParcels"  
+      driverProtectedRoutes && redirectUser("/shipperHomePage")
+    } else if(type === "consignees") {
+      const driverProtectedRoutes = 
+        ctx.pathname === "/driverHomePage" ||
+        ctx.pathname === "/shipperHomePage" ||
+        ctx.pathname === "/driversParcels" ||
+        ctx.pathname === "/shippersParcels"
+      driverProtectedRoutes && redirectUser("/consigneeHomePage")
+    }
+  }
+  
 
   if (!token || !type || type === undefined) {
     destroyCookie(ctx, "token");
     destroyCookie(ctx, "type")
-    protectedRoutes && redirectUser(ctx, `/`)
+    protectedRoutes && redirectUser(ctx, '/')
   } else {
     try {
       const res = await axios.get(`${backend_url}/task/getUser`, {

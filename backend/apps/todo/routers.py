@@ -208,12 +208,13 @@ async def addShipper(request: Request, shipper_form: Shipper=Body(...)):
     return {"access_token":access_token,"token_type":"bearer"}
 
 @router.post("/create_shipping_request")
-async def shippingRequest(request: Request, parcel_form: Parcel=Body(...)):
+async def shippingRequest(request: Request, token: str=Depends(oauth2_scheme), parcel_form: Parcel=Body(...)):
+    user=await get_current_user(request,"shippers",token)
     parcel = jsonable_encoder(parcel_form)
     parcel['parcelid']=assign_uniqueid_parcel()
-    parcel['shipper_username']=""
-    parcel['driver_username']=""
-    parcel['consignee_username']=""
+    parcel['shipper_username']=user['username']
+    # parcel['driver_username']=""
+    # parcel['consignee_username']=""
     new_parcel = await request.app.mongodb["parcels"].insert_one(parcel)
     return {"message":"creating a shipping request"}
 

@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { Button, Divider, Form, List } from 'semantic-ui-react'
 import Cookies from 'js-cookie'
-import Router from 'next/router'
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
 const backend_url = "http://localhost:8000"
 
 const Vehicle = ({setActiveItem}) => {
+  const router = useRouter()
   const token = Cookies.get("token")
   const type = Cookies.get("type")
 
@@ -48,7 +49,7 @@ const Vehicle = ({setActiveItem}) => {
       const vehicleResult = await axios.post(`${backend_url}/task/editvehicle?type=${type}`, vehicleDetail, {
         headers: { 'Authorization': `Bearer ${token}`}
       })
-      Router.push("/driverHomePage")
+      router.reload("/driverHomePage")
     } catch(error) {
       console.log(error)
       setErrormsg(error)

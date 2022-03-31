@@ -1,9 +1,9 @@
 import React from 'react'
 import ShipperHome from '../components/Home/ShipperHome'
 
-const ShipperHomePage = () => {
+const ShipperHomePage = ({user}) => {
   return (
-    <ShipperHome />
+    <ShipperHome user={user} />
   )
 }
 
