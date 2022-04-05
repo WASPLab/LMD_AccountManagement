@@ -39,7 +39,7 @@ const Layout = ({ children, user }) => {
                 </Sticky>
               </Grid.Column>
 
-              <Grid.Column width={8}>
+              <Grid.Column width={14}>
                 <Visibility context={contextRef}>
                   {children}
                 </Visibility>

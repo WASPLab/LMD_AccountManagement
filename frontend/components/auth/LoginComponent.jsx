@@ -5,12 +5,14 @@ import {
   Divider,
   Form,
   FormInput,
+  Icon,
   Message,
   Segment,
 } from "semantic-ui-react";
 import axios from "axios";
 import Cookies from "js-cookie"
 import styles from "./Login.module.css";
+import Link from "next/link";
 
 const LoginComponent = () => {
   const router = useRouter()
@@ -51,7 +53,7 @@ const LoginComponent = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormLoading(true)
-    try{
+    try {
       const token = await axios.post(`${backend_url}/task/login?type=${type}`, user)
       Cookies.set("token", token.data.access_token)
       if (type === "drivers") {
@@ -61,10 +63,10 @@ const LoginComponent = () => {
       } else if (type === "consignees") {
         router.reload("/consigneeHomePage")
       }
-    }catch(error){
-        console.log(error)
-        setErrormsg(error)
-    } finally{
+    } catch (error) {
+      console.log(error)
+      setErrormsg(error)
+    } finally {
       setFormLoading(false)
     }
   };
@@ -124,7 +126,12 @@ const LoginComponent = () => {
             color="orange"
             disabled={submitDisabled}
           />
+          <br />
+          <Message color="teal">
+            New User? <Link href={`/signup?type=${type}`}>Signup Here</Link>
+          </Message>
         </Segment>
+        <Divider hidden />
       </Form>
     </>
   );

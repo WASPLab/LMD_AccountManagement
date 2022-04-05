@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 import uuid
 from pydantic import BaseModel, Field, validator
@@ -74,10 +75,10 @@ class Consignee(BaseModel):
     reputation_score: Optional[str] = Field(...)
 
 class Parcel(BaseModel):
-    # shipper_username: Optional[str] = Field(...)
-    # driver_username: Optional[str] = Field(...)
-    # parcelid:Optional[str] = Field(...)
-    # status: Optional[str] = Field(...)
+    shipper_username: Optional[str] = Field("")
+    driver_username: Optional[str] = Field("")
+    status: Optional[str] = Field("")
+    parcelid: Optional[str] = Field("")
     consignee: Optional[str] = Field(...)
     size: Optional[str] = Field(...)
     numItems: Optional[str] = Field(...)
@@ -97,6 +98,9 @@ class Parcel(BaseModel):
     pickupTime: Optional[str] = Field(...)
     deliveryTime: Optional[str] = Field(...)
     distance: Optional[str] = Field(...)
+    createdAt: Optional[datetime] = Field(None)
+    updatedAt: Optional[datetime] = Field(None)
+
 
 class LoginModel(BaseModel):
 

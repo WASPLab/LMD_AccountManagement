@@ -1,16 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Grid } from 'semantic-ui-react'
 import PersonalDetail from '../components/Profile/Personal'
 import Address from '../components/Profile/Address'
 import ProfileMenuTab from '../components/Profile/ProfileMenuTab'
-import axios from 'axios';
 import Cookies from 'js-cookie';
 import Vehicle from '../components/Profile/Vehicle'
 import Payment from '../components/Profile/Payment'
-import Router from 'next/router'
 
-const backend_url = "http://localhost:8000"
-const token = Cookies.get("token")
 const type = Cookies.get("type")
 
 const Profile = ({user, setUser}) => {

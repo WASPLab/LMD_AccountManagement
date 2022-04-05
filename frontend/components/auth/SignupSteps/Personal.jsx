@@ -76,7 +76,9 @@ const PersonalDetail = ({setActiveItem, type}) => {
   const checkUsername = async () => {
     setUsernameLoading(true);
     try {
-      const data = await axios.get(`${backend_url}/task/checkUsername?username=${uname}`);
+      const data = await axios.get(`${backend_url}/task/checkUsername?username=${uname}`, {
+        params: {type}
+      });
       if (data.data.result === "false") {
         setUsernameAvailable(true);
         setUser((prev) => ({ ...prev, username: uname }));

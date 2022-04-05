@@ -14,18 +14,6 @@ const Home = () => {
     <Link href="/login?type=consignees">
       Login as a consignee
     </Link>
-    <br />
-    <Link href="/signup?type=drivers">
-      Signup as a driver
-    </Link>
-    <br />
-    <Link href="/signup?type=shippers">
-      Signup as a shipper
-    </Link>
-    <br />
-    <Link href="/signup?type=consignees">
-      Signup as a consignee
-    </Link>
     </div>
   )
 }

@@ -6,9 +6,8 @@ import axios from "axios";
 
 const backend_url = "http://localhost:8000"
 
-const CreateShipmentModal = ({ showModal, setShowModal }) => {
+const CreateShipmentModal = ({ showModal, setShowModal, setPendingParcels, setOpenSuccess }) => {
   const token = Cookies.get("token")
-
   const [shipmentDetail, setShipmentDetail] = useState({
     consignee: "",
     numItems: "",
@@ -66,9 +65,11 @@ const CreateShipmentModal = ({ showModal, setShowModal }) => {
     event.preventDefault()
     try {
       const data = await axios.post(`${backend_url}/task/create_shipping_request`, shipmentDetail, {
-        headers: { 'Authorization': `Bearer ${token}`}
+        headers: { 'Authorization': `Bearer ${token}` }
       })
+      setPendingParcels((prev) => [shipmentDetail, ...prev])
       setShowModal(false)
+      setOpenSuccess(true)
     } catch (error) {
       console.log(error)
     }
@@ -108,232 +109,236 @@ const CreateShipmentModal = ({ showModal, setShowModal }) => {
                 icon="user"
                 iconPosition="left"
               />
+
               <Header>Shipment Description</Header>
+              <Segment.Group horizontal >
+                <Segment >
+                  <Form.Input
+                    required
+                    label="Number of Items"
+                    placeholder="Number of Items"
+                    name="numItems"
+                    value={numItems}
+                    onChange={handleChange}
+                    fluid
+                    icon="keyboard outline"
+                    iconPosition="left"
+                  />
+                  <label style={{fontWeight: "bold", fontSize: "13px"}}>Size of Box <span style={{color: "red"}}>*</span></label>
+                  <Dropdown
+                    placeholder="Size of Box"
+                    name="size"
+                    label="Size of Box"
+                    search
+                    selection
+                    options={sizeOfItem}
+                    fluid
+                    onChange={handleChange}
+                    value={size}
+                  />
+                </Segment>
+                <Segment style={{width: "22%"}}>
+                  <Form.Input
+                    required
+                    label="Cost"
+                    placeholder="Cost"
+                    name="cost"
+                    value={cost}
+                    onChange={handleChange}
+                    fluid
+                    icon="keyboard outline"
+                    iconPosition="left"
+                  />
 
-              <Segment >
-                <Form.Input
-                  required
-                  label="Number of Items"
-                  placeholder="Number of Items"
-                  name="numItems"
-                  value={numItems}
-                  onChange={handleChange}
-                  fluid
-                  icon="keyboard outline"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Distance"
+                    placeholder="Distance"
+                    name="distance"
+                    value={distance}
+                    onChange={handleChange}
+                    fluid
+                    icon="keyboard outline"
+                    iconPosition="left"
+                  />
+                </Segment>
+              </Segment.Group>
 
-                <Dropdown
-                  placeholder="Size of Box"
-                  name="size"
-                  label="Size of Box"
-                  search
-                  selection
-                  options={sizeOfItem}
-                  fluid
-                  onChange={handleChange}
-                  value={size}
-                />
+              <Segment.Group horizontal>
+                <Segment>
+                  <Header>Pickup Details</Header>
+                  <Form.Input
+                    required
+                    label="Address 1"
+                    placeholder="Address 1"
+                    name="pickupStreet"
+                    value={pickupStreet}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="Cost"
-                  placeholder="Cost"
-                  name="cost"
-                  value={cost}
-                  onChange={handleChange}
-                  fluid
-                  icon="keyboard outline"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Address 2"
+                    placeholder="Address 2"
+                    name="pickupAddressline2"
+                    value={pickupAddressline2}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="Distance"
-                  placeholder="Distance"
-                  name="distance"
-                  value={distance}
-                  onChange={handleChange}
-                  fluid
-                  icon="keyboard outline"
-                  iconPosition="left"
-                />
-              </Segment>
+                  <Form.Input
+                    required
+                    label="City"
+                    placeholder="City"
+                    name="pickupCity"
+                    value={pickupCity}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-              <Header>Pickup Details</Header>
-              <Segment>
-                <Form.Input
-                  required
-                  label="Address 1"
-                  placeholder="Address 1"
-                  name="pickupStreet"
-                  value={pickupStreet}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Province"
+                    placeholder="Province"
+                    name="pickupProvince"
+                    value={pickupProvince}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="Address 2"
-                  placeholder="Address 2"
-                  name="pickupAddressline2"
-                  value={pickupAddressline2}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Postal Code"
+                    placeholder="Postal Code"
+                    name="pickupPostalcode"
+                    value={pickupPostalcode}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="City"
-                  placeholder="City"
-                  name="pickupCity"
-                  value={pickupCity}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Pickup Day"
+                    placeholder="DD/MM/YYYY"
+                    name="pickupDay"
+                    value={pickupDay}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="Province"
-                  placeholder="Province"
-                  name="pickupProvince"
-                  value={pickupProvince}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Pickup Time"
+                    placeholder="HH:MM AM/PM"
+                    name="pickupTime"
+                    value={pickupTime}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
+                </Segment>
 
-                <Form.Input
-                  required
-                  label="Postal Code"
-                  placeholder="Postal Code"
-                  name="pickupPostalcode"
-                  value={pickupPostalcode}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
+                <Segment>
+                  <Header>Dropoff Details</Header>
+                  <Form.Input
+                    required
+                    label="Address 1"
+                    placeholder="Address 1"
+                    name="dropStreet"
+                    value={dropStreet}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="Pickup Day"
-                  placeholder="DD/MM/YYYY"
-                  name="pickupDay"
-                  value={pickupDay}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Address 2"
+                    placeholder="Address 2"
+                    name="dropAddressline2"
+                    value={dropAddressline2}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="Pickup Time"
-                  placeholder="HH:MM AM/PM"
-                  name="pickupTime"
-                  value={pickupTime}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
-              </Segment>
+                  <Form.Input
+                    required
+                    label="City"
+                    placeholder="City"
+                    name="dropCity"
+                    value={dropCity}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-              <Header>Dropoff Details</Header>
-              <Segment>
-                <Form.Input
-                  required
-                  label="Address 1"
-                  placeholder="Address 1"
-                  name="dropStreet"
-                  value={dropStreet}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Province"
+                    placeholder="Province"
+                    name="dropProvince"
+                    value={dropProvince}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="Address 2"
-                  placeholder="Address 2"
-                  name="dropAddressline2"
-                  value={dropAddressline2}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Postal Code"
+                    placeholder="Postal Code"
+                    name="dropPostalcode"
+                    value={dropPostalcode}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="City"
-                  placeholder="City"
-                  name="dropCity"
-                  value={dropCity}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
+                  <Form.Input
+                    required
+                    label="Delivery Day"
+                    placeholder="DD/MM/YYYY"
+                    name="deliveryDay"
+                    value={deliveryDay}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
 
-                <Form.Input
-                  required
-                  label="Province"
-                  placeholder="Province"
-                  name="dropProvince"
-                  value={dropProvince}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
-
-                <Form.Input
-                  required
-                  label="Postal Code"
-                  placeholder="Postal Code"
-                  name="dropPostalcode"
-                  value={dropPostalcode}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
-
-                <Form.Input
-                  required
-                  label="Delivery Day"
-                  placeholder="DD/MM/YYYY"
-                  name="deliveryDay"
-                  value={deliveryDay}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
-
-                <Form.Input
-                  required
-                  label="Delivery Time"
-                  placeholder="HH:MM AM/PM"
-                  name="deliveryTime"
-                  value={deliveryTime}
-                  onChange={handleChange}
-                  fluid
-                  icon="user"
-                  iconPosition="left"
-                />
-              </Segment>
-
+                  <Form.Input
+                    required
+                    label="Delivery Time"
+                    placeholder="HH:MM AM/PM"
+                    name="deliveryTime"
+                    value={deliveryTime}
+                    onChange={handleChange}
+                    fluid
+                    icon="user"
+                    iconPosition="left"
+                  />
+                </Segment>
+              </Segment.Group>
               <Button
                 icon="save"
                 content="Save"

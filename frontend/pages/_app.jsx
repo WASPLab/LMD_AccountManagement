@@ -35,32 +35,24 @@ MyApp.getInitialProps = async ({ ctx }) => {
     ctx.pathname === "/driverHomePage" ||
     ctx.pathname === "/shipperHomePage" ||
     ctx.pathname === "/consigneeHomePage" ||
-    ctx.pathname === "/driversParcels" ||
-    ctx.pathname === "/shippersParcels" ||
-    ctx.pathname === "/consigneesParcels" ||
+    ctx.pathname === "/parcels" ||
     ctx.pathname === "/profile"
 
   if (token) {
     if(type === "drivers") {
       const driverProtectedRoutes = 
         ctx.pathname === "/shipperHomePage" ||
-        ctx.pathname === "/consigneeHomePage" ||
-        ctx.pathname === "/shippersParcels" ||
-        ctx.pathname === "/consigneesParcels"  
+        ctx.pathname === "/consigneeHomePage"
       driverProtectedRoutes && redirectUser("/driverHomePage")
     } else if(type === "shippers") {
       const driverProtectedRoutes = 
         ctx.pathname === "/driverHomePage" ||
-        ctx.pathname === "/consigneeHomePage" ||
-        ctx.pathname === "/driversParcels" ||
-        ctx.pathname === "/consigneesParcels"  
+        ctx.pathname === "/consigneeHomePage"
       driverProtectedRoutes && redirectUser("/shipperHomePage")
     } else if(type === "consignees") {
       const driverProtectedRoutes = 
         ctx.pathname === "/driverHomePage" ||
-        ctx.pathname === "/shipperHomePage" ||
-        ctx.pathname === "/driversParcels" ||
-        ctx.pathname === "/shippersParcels"
+        ctx.pathname === "/shipperHomePage"
       driverProtectedRoutes && redirectUser("/consigneeHomePage")
     }
   }

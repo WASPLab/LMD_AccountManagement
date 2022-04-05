@@ -64,7 +64,6 @@ async def get_current_user(request: Request, type: str, token: str=Depends(oauth
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
-        print(username)
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
@@ -92,7 +91,6 @@ def assign_uniqueid_parcel():
 @router.post("/login")
 async def login_for_access_token(request: Request, type: str, user: LoginModel=Body(...)):
     user = jsonable_encoder(user)
-    print(user)
     user=await authenticate_user(request, type, user['username'],user['password'])
     if not user:
         raise HTTPException(
@@ -119,8 +117,8 @@ async def list_tasks(request: Request, token: str = Depends(oauth2_scheme)):
     
 #  Works fine
 @router.get("/checkUsername/")
-async def check_username(username: str, request: Request):
-    response = await request.app.mongodb["drivers"].find_one({'username': username},{'_id':0})
+async def check_username(username: str, type: str, request: Request):
+    response = await request.app.mongodb[type].find_one({'username': username},{'_id':0})
     if response:
         return {"result":"true"}
 
@@ -209,19 +207,33 @@ async def addShipper(request: Request, shipper_form: Shipper=Body(...)):
 
 @router.post("/create_shipping_request")
 async def shippingRequest(request: Request, token: str=Depends(oauth2_scheme), parcel_form: Parcel=Body(...)):
-    user=await get_current_user(request,"shippers",token)
+    user= await get_current_user(request, "shippers", token)
     parcel = jsonable_encoder(parcel_form)
+    parcel['shipper_username'] = user['username']
     parcel['parcelid']=assign_uniqueid_parcel()
-    parcel['shipper_username']=user['username']
-    # parcel['driver_username']=""
-    # parcel['consignee_username']=""
+    parcel['createdAt'] = datetime.now()
+    parcel['updatedAt'] = datetime.now()
+    parcel['status'] = 'pending'
     new_parcel = await request.app.mongodb["parcels"].insert_one(parcel)
     return {"message":"creating a shipping request"}
 
 @router.get("/available_parcels")
-async def pendingParcels(request: Request):
+async def availableParcels(request: Request, type: str, status: str, token: str=Depends(oauth2_scheme)):
+    user = await get_current_user(request, type, token)
+
     parcels=[]
-    cursor = request.app.mongodb["parcels"].find({'status': "pending"},{'_id':0})
+    if type == 'shippers':
+        filter = {"shipper_username": user['username'], 'status': status}
+
+    if type == 'consignees':
+        filter = {'consignee': user['username'], 'status': status}
+
+    if type == 'drivers':
+        if status == 'pending':
+            filter = {'status': status}
+        else :
+            filter = {'driver_username': user['username'], 'status': status}
+    cursor = request.app.mongodb["parcels"].find(filter).sort("updatedAt", -1)
     async for document in cursor:
             parcels.append(Parcel(**document))
     if cursor:
@@ -230,23 +242,33 @@ async def pendingParcels(request: Request):
     return {"result": "false"}
 
 @router.post("/accept_order")
-async def confirmShipment(request: Request, id: str, driver: str):
+async def confirmShipment(request: Request, id: str, token: str=Depends(oauth2_scheme)):
+    driver = await get_current_user(request, "drivers", token)
     filter = { 'parcelid': id}
     status_value={"$set": {"status":"assigned"}}
-    driver_value={"$set": {"driver_username":driver}}
+    driver_value={"$set": {"driver_username":driver['username']}}
+    update_date={"$set": {"updatedAt":datetime.now()}}
 
     status_assign=await request.app.mongodb["parcels"].update_one(filter,status_value)
     driver_assign=await request.app.mongodb["parcels"].update_one(filter,driver_value)
+    update_data_assign = await request.app.mongodb["parcels"].update_one(filter,update_date)
 
     return {"message": "assigned"}
 
-@router.post("/accepted_orders")
-async def acceptedShipments(request: Request, driver: str):
-    parcels=[]
-    cursor = request.app.mongodb["parcels"].find({"driver_username":driver},{'_id':0})
-    async for document in cursor:
-            parcels.append(Parcel(**document))
-    if cursor:
-        return parcels
+@router.post("/update_order_status")
+async def confirmShipment(request: Request, id: str, status: str, token: str=Depends(oauth2_scheme)):
+    driver = await get_current_user(request, "drivers", token)
+    filter = { 'parcelid': id}
+    status_value={"$set": {"status": status}}
 
-    return {"result" : "you don't have any orders"}
+    status_assign=await request.app.mongodb["parcels"].update_one(filter,status_value)
+
+    return {"message": status}
+
+@router.get("/find_consignee")
+async def findConsignee(request: Request, username: str):
+    response = await request.app.mongodb["consignees"].find_one({'username': username},{'_id':0}).pretty()
+    if response:
+        return "true"
+    else:
+        return "false"
