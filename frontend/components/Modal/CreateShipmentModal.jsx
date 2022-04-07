@@ -180,7 +180,6 @@ const CreateShipmentModal = ({ showModal, setShowModal, setPendingParcels, setOp
                   />
 
                   <Form.Input
-                    required
                     label="Address 2"
                     placeholder="Address 2"
                     name="pickupAddressline2"
@@ -267,7 +266,6 @@ const CreateShipmentModal = ({ showModal, setShowModal, setPendingParcels, setOp
                   />
 
                   <Form.Input
-                    required
                     label="Address 2"
                     placeholder="Address 2"
                     name="dropAddressline2"

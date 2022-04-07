@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Modal } from 'semantic-ui-react'
 
-const SuccessMsg = ({ showModal, setShowModal }) => {
+const SuccessMsg = ({ showModal, setShowModal, message }) => {
   return (
     <>
       <Modal
@@ -16,7 +16,7 @@ const SuccessMsg = ({ showModal, setShowModal }) => {
         />
         <Modal.Content>
           <div style={{textAlign: "center"}}>
-            Shipment Created Successfully.
+            {message}
             <br />
             <br />
             <Button

@@ -14,6 +14,7 @@ const ShipperHome = ({ user }) => {
 
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [openSuccess, setOpenSuccess] = useState(false)
+  const [deleteShipment, setDeleteShipment] = useState(false)
   const [pendingParcels, setPendingParcels] = useState([])
   const [approvedParcels, setApprovedParcels] = useState([])
   const [inTransitParcels, setInTransitParcels] = useState([])
@@ -59,7 +60,8 @@ const ShipperHome = ({ user }) => {
       />
       <br />
 
-      {openSuccess && <SuccessMsg showModal={openSuccess} setShowModal={setOpenSuccess} />}
+      {openSuccess && <SuccessMsg showModal={openSuccess} setShowModal={setOpenSuccess} message={"Shipment created successfully."}/>}
+      {deleteShipment && <SuccessMsg showModal={deleteShipment} setShowModal={setDeleteShipment} message={"This shipment is deleted permanently."}/>}
 
       {showCreateModal &&
         <CreateShipmentModal
@@ -70,13 +72,13 @@ const ShipperHome = ({ user }) => {
         />
       }
       <Header>Pending Parcels</Header>
-      <ParcelTable parcels={pendingParcels} />
+      <ParcelTable parcels={pendingParcels} setParcels={setPendingParcels} setOpenSuccess={setDeleteShipment} />
 
       <br />
       <Divider />
 
       <Header>Approved Parcels</Header>
-      <ParcelTable parcels={approvedParcels} setParcels={setApprovedParcels}/>
+      <ParcelTable parcels={approvedParcels} setParcels={setApprovedParcels} setOpenSuccess={setDeleteShipment}/>
 
       <br />
       <Divider />

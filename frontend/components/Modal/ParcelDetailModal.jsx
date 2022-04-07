@@ -5,7 +5,7 @@ import { Button, Modal, Table } from 'semantic-ui-react'
 
 const backend_url = "http://localhost:8000"
 
-const ParcelDetailModal = ({ parcel, showModal, setShowModal, status, setParcels, setNewParcels }) => {
+const ParcelDetailModal = ({ parcel, showModal, setShowModal, setParcels, setNewParcels, setOldParcels, setOpenSuccess }) => {
   const type = Cookies.get("type")
   const token = Cookies.get("token")
 
@@ -17,25 +17,46 @@ const ParcelDetailModal = ({ parcel, showModal, setShowModal, status, setParcels
       })
       setShowModal(false)
       setParcels((prev) => prev.filter((p) => p.parcelid !== parcel.parcelid))
+      parcel.status = "assigned"
       setNewParcels((prev) => [parcel, ...prev])
     } catch (error) {
       console.log(error)
     }
   }
 
-  const updateOrder = async () => {
-    let changedStatus
-    if (status === 'assigned') {
-      changedStatus = "in-transit"
-    } else if (status === 'in-transit') {
-      changedStatus = "delivered"
+  const cancelShipment = async () => {
+    if ((parcel.status === "pending" || parcel.status === "assigned") && type === "shippers") {
+      parcel.status = "canceled"
+    } else if ((parcel.status === "assigned" || parcel.status === "in-transit")&& type === "drivers") {
+      parcel.status = "pending"
     }
     try {
       const data = await axios.post(`${backend_url}/task/update_order_status`, {}, {
-        params: { id: parcel.parcelid, status: changedStatus },
+        params: { id: parcel.parcelid, status: parcel.status, type },
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      parcel.status = changedStatus
+      setShowModal(false)
+      setParcels((prev) => prev.filter((p) => p.parcelid !== parcel.parcelid))
+      if (type === "drivers") {
+        setOldParcels((prev) => [parcel, ...prev])
+      }
+      setOpenSuccess(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const updateOrder = async () => {
+    if (parcel.status === 'assigned') {
+      parcel.status = "in-transit"
+    } else if (parcel.status === 'in-transit') {
+      parcel.status = "delivered"
+    }
+    try {
+      const data = await axios.post(`${backend_url}/task/update_order_status`, {}, {
+        params: { id: parcel.parcelid, status: parcel.status, type },
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
       setShowModal(false)
       setParcels((prev) => prev.filter((p) => p.parcelid !== parcel.parcelid))
       setNewParcels((prev) => [parcel, ...prev])
@@ -117,7 +138,7 @@ const ParcelDetailModal = ({ parcel, showModal, setShowModal, status, setParcels
               </Table.Row>
             </Table.Body>
           </Table>
-          {type === 'drivers' && status === 'pending' && <>
+          {type === 'drivers' && parcel.status === 'pending' && <>
             <Button
               icon="check"
               content="Accept"
@@ -131,7 +152,7 @@ const ParcelDetailModal = ({ parcel, showModal, setShowModal, status, setParcels
               onClick={() => setShowModal(false)}
             />
           </>}
-          {type === 'drivers' && status === 'assigned' &&
+          {type === 'drivers' && parcel.status === 'assigned' &&
             <>
               <Button
                 icon="shipping fast"
@@ -142,13 +163,33 @@ const ParcelDetailModal = ({ parcel, showModal, setShowModal, status, setParcels
             </>
           }
 
-          {type === 'drivers' && status === 'in-transit' &&
+          {type === 'drivers' && parcel.status === 'in-transit' &&
             <>
               <Button
                 icon="truck"
                 content="Update Status to Delivered"
                 color='orange'
                 onClick={updateOrder}
+              />
+            </>
+          }
+          {type === 'drivers' && (parcel.status === 'assigned' || parcel.status === 'in-transit') &&
+            <>
+              <Button
+                icon="cancel"
+                content="Cancel Shipment"
+                color='orange'
+                onClick={cancelShipment}
+              />
+            </>
+          }
+          {type === 'shippers' && (parcel.status === 'assigned' || parcel.status === 'pending') &&
+            <>
+              <Button
+                icon="cancel"
+                content="Cancel Shipment"
+                color='orange'
+                onClick={cancelShipment}
               />
             </>
           }

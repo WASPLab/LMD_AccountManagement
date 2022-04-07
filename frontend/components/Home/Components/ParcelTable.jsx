@@ -3,7 +3,7 @@ import { Button, Table } from 'semantic-ui-react'
 import ParcelDetailModal from '../../Modal/ParcelDetailModal'
 import NoDataFound from './NoDataFound'
 
-const ParcelTable = ({ parcels, setParcels, setNewParcels, status }) => {
+const ParcelTable = ({ parcels, setParcels, setNewParcels, setOldParcels, status, setOpenSuccess }) => {
   const [showModal, setShowModal] = useState(false)
   const [selectedParcel, setSelectedParcel] = useState('')
 
@@ -17,6 +17,8 @@ const ParcelTable = ({ parcels, setParcels, setNewParcels, status }) => {
           status={status}
           setParcels={setParcels}
           setNewParcels={setNewParcels}
+          setOldParcels={setOldParcels}
+          setOpenSuccess={setOpenSuccess}
         />
       }
       {parcels.length > 0 ? (<Table >

@@ -31,19 +31,35 @@ const PersonalDetail = ({setActiveItem, type}) => {
   const [errormsg, setErrormsg] = useState(null);
 
   const [uname, setUname] = useState("");
-  const [usernameAvailable, setUsernameAvailable] = useState(false);
+  const [usernameAvailable, setUsernameAvailable] = useState(true);
   const [usernameLoading, setUsernameLoading] = useState(false);
 
   const [formLoading, setFormLoading] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [firstLoad, setFirstLoad] = useState(true)
+  
+  const [passwordError, setPasswordError] = useState(false)
+  const [usernameError, setUsernameError] = useState(false)
 
   const handleChange = (event, result) => {
     const { name, value } = event.target;
+    if (name === "password") {
+      setPasswordError(false)
+    }
     setUser((prev) => ({ ...prev, [name || result.name]: value || result.value}));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+
+    if ((password.length < 8) || (password.length > 20)) {
+      setPasswordError("Please insert password between 8 to 20 character")
+      return
+    }
+    if ((uname.length < 2) || (uname.length > 12) ) {
+      setUsernameError("Please insert username between 2 to 12 character")
+      return
+    }
     setFormLoading(true)
     try{
         const token = await axios.post(`${backend_url}/task/signup?type=${type}`, user)
@@ -92,7 +108,10 @@ const PersonalDetail = ({setActiveItem, type}) => {
   };
 
   useEffect(() => {
-    uname === "" ? setUsernameAvailable(false) : checkUsername();
+    if (!firstLoad) {
+      uname === "" ? setUsernameAvailable(false) : checkUsername();
+    }
+    setFirstLoad(false)
   }, [uname])
 
   return (
@@ -147,6 +166,7 @@ const PersonalDetail = ({setActiveItem, type}) => {
           />
 
           <FormInput
+            error={passwordError && "Please enter password between 8 to 20 characters"}
             required
             label="Password"
             placeholder="Password"
@@ -169,12 +189,13 @@ const PersonalDetail = ({setActiveItem, type}) => {
           <FormInput
             required
             loading={usernameLoading}
-            error={!usernameAvailable}
+            error={(!usernameAvailable || usernameError) && "Please enter username between 3 to 10 characters"}
             label="Username"
             placeholder="Username"
             name="username"
             value={uname}
             onChange={(e) => {
+              setUsernameError(false)
               setUname(e.target.value);
               if (regexUserName.test(e.target.value)) {
                 setUsernameAvailable(true);

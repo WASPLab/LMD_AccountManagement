@@ -13,6 +13,7 @@ const Vehicle = ({user, setUser}) => {
   const [errormsg, setErrormsg] = useState(null)
   const [showLicenseDetail, setShowLicenseDetail] = useState(true)
   const [showVehicleDetail, setShowVehicleDetail] = useState(false)
+  const [licenseNumberError, setLicenseNumberError] = useState(false)
 
   const [licenseDetail, setLicenseDetail] = useState({
     license_number: user?.license_number || "",
@@ -31,6 +32,9 @@ const Vehicle = ({user, setUser}) => {
 
   const handleChange = (event, result) => {
     const { name, value } = event.target;
+    if (name === "license_number") {
+      setLicenseNumberError(false)
+    }
     setLicenseDetail((prev) => ({ ...prev, [name || result.name]: value || result.value}));
   };
 
@@ -41,6 +45,10 @@ const Vehicle = ({user, setUser}) => {
 
   const buttonClickHandle = async (event) => {
     event.preventDefault()
+    if (license_number.length !== 15) {
+      setLicenseNumberError(true)
+      return
+    }
     try {
       const licenceResult = await axios.post(`${backend_url}/task/editlicense?type=${type}`, licenseDetail, {
         headers: { 'Authorization': `Bearer ${token}`}
@@ -81,6 +89,7 @@ const Vehicle = ({user, setUser}) => {
 
           {showLicenseDetail && <Form>
             <Form.Input
+              error={licenseNumberError && "Please enter 15 digit license number"}
               required
               label="License Number"
               placeholder="License Number"

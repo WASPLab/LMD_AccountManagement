@@ -22,6 +22,8 @@ const Payment = () => {
   const [errormsg, setErrormsg] = useState(null);
   const [enableSave, setEnableSave] = useState(false)
   const [firstLoad, setFirstLoad] = useState(true)
+  const [cardNumberError, setCardNumberError] = useState(false)
+  const [cvcError, setCvcError] = useState(false)
   const { card_number, name_on_card, expiration, cvc } = addressDetail
 
   useEffect(() => {
@@ -34,11 +36,25 @@ const Payment = () => {
 
   const handleChange = (event, result) => {
     const { name, value } = event.target;
+    if (name === "cvc") {
+      setCvcError(false)
+    }
+    if (name === "card_number") {
+      setCardNumberError(false)
+    }
     setAddressDetail((prev) => ({ ...prev, [name || result.name]: value || result.value }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    if (card_number.length !== 16) {
+      setCardNumberError(true)
+      return
+    }
+    if (cvc.length !== 3) {
+      setCvcError(true)
+      return
+    }
     try {
       const data = await axios.post(`${backend_url}/task/editpayment?type=${type}`, addressDetail, {
         headers: { 'Authorization': `Bearer ${token}`}
@@ -59,6 +75,7 @@ const Payment = () => {
       >
         <Segment>
           <Form.Input
+            error={cardNumberError && "Please enter 16 digit card number"}
             required
             label="Card Number"
             placeholder="Card Number"
@@ -95,6 +112,7 @@ const Payment = () => {
           />
 
           <Form.Input
+            error={cvcError && "Please enter valid cvc"}
             required
             label="CVC"
             placeholder="CVC"

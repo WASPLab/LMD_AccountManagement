@@ -256,8 +256,8 @@ async def confirmShipment(request: Request, id: str, token: str=Depends(oauth2_s
     return {"message": "assigned"}
 
 @router.post("/update_order_status")
-async def confirmShipment(request: Request, id: str, status: str, token: str=Depends(oauth2_scheme)):
-    driver = await get_current_user(request, "drivers", token)
+async def confirmShipment(request: Request, id: str, type: str, status: str, token: str=Depends(oauth2_scheme)):
+    driver = await get_current_user(request, type, token)
     filter = { 'parcelid': id}
     status_value={"$set": {"status": status}}
 
@@ -266,9 +266,6 @@ async def confirmShipment(request: Request, id: str, status: str, token: str=Dep
     return {"message": status}
 
 @router.get("/find_consignee")
-async def findConsignee(request: Request, username: str):
-    response = await request.app.mongodb["consignees"].find_one({'username': username},{'_id':0}).pretty()
-    if response:
-        return "true"
-    else:
-        return "false"
+async def findConsignee(request: Request):
+    #TODO: Write function to find consignee return address and username only
+    return
